@@ -134,7 +134,7 @@ async function loadDashboard() {
 
   const activitiesResult = await client
     .from('activities')
-    .select('id, title, description, points, provider, created_at')
+    .select('id, title, description, points, provider, video_url, created_at')
     .eq('status', 'active')
     .order('created_at', { ascending: false });
 
