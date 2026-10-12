@@ -49,7 +49,32 @@ Linkuri oficiale:
 ## Atenție la nume
 În conversație a apărut o diferență de ortografie între **Vurgelio** și **Vurqelio**. Acest pachet folosește **Vurqelio** (cu litera `q`). Verifică exact numele și domeniul înainte să plătești pentru domeniu sau marcă.
 
+## Versiunea 2 — ce e nou
+- Bug critic reparat în `app.js` (lipseau acolade → tot site-ul era blocat).
+- Pagină separată `dashboard.html` cu: sold, nivele, streak zilnic, insigne, clasament, magazin, istoric și panou Admin.
+- Validare pe server: `start_activity` pornește o sesiune, iar `complete_activity` acordă puncte doar dacă a trecut pe server cel puțin durata videoclipului. O singură recompensă per activitate.
+- Utilizatorii nu își pot modifica `is_admin` sau streak-ul (doar `display_name`).
+
+## Versiunea 3
+- Profil: schimbi numele afișat și alegi rama avatarului (ramele se cumpără din Magazin).
+- „Ai uitat parola?” + pagina `reset.html`.
+- Banner de avertizare când streak-ul e pe cale să expire.
+- Provocări săptămânale (se resetează luni) cu bonus VP, validate pe server.
+
+## Versiunea 4
+- Confetti la insigne noi și provocări finalizate.
+- Sezoane lunare în clasament: top 3 primesc 500/300/150 VP + insignă; „Sala campionilor” cu ultimele 6 sezoane. Sezonul trecut se închide automat la prima vizită în panou din luna nouă.
+- Program referral: link personal în Profil; ambii primesc +100 VP după prima activitate a celui invitat. Insigna „Recrutor” la 3 invitați.
+- Admin → Provocări: adaugi, editezi, ascunzi sau ștergi provocări fără SQL.
+
+## Pași după upload
+1. Supabase → SQL Editor → rulează tot `supabase/schema.sql` (se poate rula de mai multe ori).
+2. Fă-te admin: `update public.profiles set is_admin = true where id = (select id from auth.users where email = 'emailul@tau.ro');`
+3. Supabase → Authentication → URL Configuration: adaugă `https://SITE-UL-TAU.netlify.app/reset.html` la **Redirect URLs** (necesar pentru „Ai uitat parola?”).
+4. Intră în Panou → Admin și adaugă activități (link YouTube + durata în secunde + puncte).
+
 ## Fișiere importante
+- `dashboard.html`, `dashboard.js` — panoul utilizatorului și admin.
 - `index.html` — pagina principală.
 - `styles.css` — design responsive.
 - `app.js` — interacțiuni și configurare Supabase.
