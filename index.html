@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Vurqelio — urmărește progresul, strânge puncte și descoperă recompense.">
+  <title>Vurqelio — Watch. Earn. Repeat.</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Vurqelio acasă">
+      <img src="assets/logo.svg" alt="" width="38" height="38">
+      <span>vurqelio<span class="dot">.</span></span>
+    </a>
+    <nav class="nav">
+      <a href="#cum-functioneaza">Cum funcționează</a>
+      <a href="#recompense">Recompense</a>
+      <button class="btn btn-outline" id="openLogin">Conectare</button>
+      <button class="btn btn-primary" id="openSignup">Începe gratuit <span>↗</span></button>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Deschide meniul">☰</button>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> O nouă experiență digitală</div>
+        <h1>Timpul tău.<br><span class="gradient-text">Punctele tale.</span></h1>
+        <p class="hero-lead">Descoperă conținut, completează activități și urmărește-ți progresul într-un singur loc.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-large" id="heroSignup">Creează cont gratuit <span>→</span></button>
+          <a class="btn btn-ghost btn-large" href="#cum-functioneaza">Vezi cum funcționează <span>↓</span></a>
+        </div>
+        <div class="trust-row">
+          <div class="avatars"><span>V</span><span>+</span><span>★</span></div>
+          <div><strong>Începe în câteva minute</strong><small>Cont gratuit · Fără abonament pentru testare</small></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="dashboard-card">
+          <div class="card-top"><span class="tiny-label">PANOU PERSONAL</span><span class="status"><i></i> DEMO</span></div>
+          <p class="muted">Bun venit în Vurqelio</p>
+          <div class="points-line"><div><small>Sold de puncte</small><h2 id="heroPoints">1.250 <span>VP</span></h2></div><div class="coin">V</div></div>
+          <div class="progress-meta"><span>Progres săptămânal</span><b>68%</b></div>
+          <div class="progress"><span></span></div>
+          <div class="mini-stats"><div><small>Activități</small><b>08</b></div><div><small>Zile active</small><b>04</b></div><div><small>Nivel</small><b>02</b></div></div>
+          <div class="activity-row"><span class="activity-icon">▶</span><div><b>Descoperă activități</b><small>Disponibil în curând</small></div><span class="arrow">↗</span></div>
+        </div>
+        <div class="floating-chip chip-top">✦ Progresul tău</div>
+        <div class="floating-chip chip-bottom"><span class="spark">✦</span> Un pas pe rând.</div>
+      </div>
+    </section>
+
+    <section class="metrics wrap">
+      <div><b>01</b><span>Un singur cont</span></div>
+      <div><b>02</b><span>Progres transparent</span></div>
+      <div><b>03</b><span>Recompense clar definite</span></div>
+      <div><b>04</b><span>Construit pentru mobil</span></div>
+    </section>
+
+    <section class="section wrap" id="cum-functioneaza">
+      <div class="section-heading"><span class="eyebrow">SIMPLU DE FOLOSIT</span><h2>Începe. Participă. <span class="gradient-text">Progresează.</span></h2><p>Vurqelio este în faza de prototip. Acum poți testa interfața și contul; activitățile plătite și retragerile nu sunt încă activate.</p></div>
+      <div class="steps-grid">
+        <article class="step-card"><div class="step-number">01</div><div class="step-icon">◎</div><h3>Creează-ți contul</h3><p>Înregistrează-te și accesează un panou personal.</p></article>
+        <article class="step-card"><div class="step-number">02</div><div class="step-icon">▶</div><h3>Descoperă activități</h3><p>În versiunea viitoare, activitățile vor fi adăugate doar prin furnizori compatibili cu regulile lor.</p></article>
+        <article class="step-card"><div class="step-number">03</div><div class="step-icon">✧</div><h3>Urmărește punctele</h3><p>Vezi istoricul și soldul în cont. Orice recompensă reală va avea reguli și condiții afișate clar.</p></article>
+      </div>
+    </section>
+
+    <section class="rewards-section" id="recompense">
+      <div class="wrap rewards-inner">
+        <div><span class="eyebrow">VURQELIO POINTS</span><h2>Progresul tău,<br><span class="gradient-text">la vedere.</span></h2><p>Un sistem simplu de puncte pentru a demonstra experiența. În această versiune, punctele sunt demonstrative și nu au valoare monetară.</p><button class="btn btn-primary" id="rewardsSignup">Testează panoul <span>→</span></button></div>
+        <div class="reward-ticket"><div class="ticket-shine"></div><span class="ticket-label">VURQELIO / REWARDS</span><div class="ticket-mark">V<span>+</span></div><h3>POINTS</h3><p>WATCH. EARN. REPEAT.</p><div class="ticket-bottom"><span>DEMO EDITION</span><span>001 — 2026</span></div></div>
+      </div>
+    </section>
+
+    <section class="cta wrap"><div><span class="eyebrow">PRIMII PAȘI</span><h2>Construim Vurqelio<br>pas cu pas.</h2><p>Testează versiunea inițială și ajută-ne să pregătim următoarea etapă.</p></div><button class="btn btn-primary btn-large" id="bottomSignup">Începe gratuit <span>↗</span></button></section>
+  </main>
+
+  <footer class="footer wrap"><a class="brand" href="#"><img src="assets/logo.svg" alt="" width="30" height="30"><span>vurqelio<span class="dot">.</span></span></a><span>© <span id="year"></span> Vurqelio · Prototip în dezvoltare</span><div><a href="privacy.html">Confidențialitate</a><a href="terms.html">Termeni</a><a href="mailto:contact@vurqelio.com">Contact</a></div></footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="modal-close" id="closeModal" aria-label="Închide">×</button>
+      <div class="modal-brand"><img src="assets/logo.svg" alt="" width="42" height="42"><span>vurqelio<span class="dot">.</span></span></div>
+      <h2 id="authTitle">Bine ai venit.</h2><p id="authSubtitle">Creează-ți contul pentru a testa panoul.</p>
+      <div class="auth-tabs"><button class="active" data-mode="signup">Înregistrare</button><button data-mode="login">Conectare</button></div>
+      <form id="authForm">
+        <label id="nameLabel">Nume afișat<input id="displayName" type="text" autocomplete="nickname" placeholder="Cum să-ți spunem?"></label>
+        <label>Email<input id="email" type="email" autocomplete="email" placeholder="nume@email.com" required></label>
+        <label>Parolă<input id="password" type="password" autocomplete="new-password" minlength="8" placeholder="Minimum 8 caractere" required></label>
+        <button class="btn btn-primary full-width" id="authSubmit" type="submit">Creează cont <span>→</span></button>
+        <p class="form-message" id="formMessage" role="status"></p>
+        <small class="legal-note">Nu introduce date de plată. Versiunea aceasta este un prototip; punctele demonstrative nu pot fi retrase.</small>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
