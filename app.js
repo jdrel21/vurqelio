@@ -103,57 +103,30 @@ async function initializeYouTubePlayers() {
 
     youtubePlayers[activityId] = new YT.Player(iframe, {
   events: {
-    onReady: () => {
-      iframe.dataset.watched = '0';
-      iframe.dataset.lastTime = '0';
-      iframe.dataset.playing = 'false';
-
-      const timer = setInterval(() => {
-        const player = youtubePlayers[activityId];
-
-        if (!player || !player.getCurrentTime) return;
-
-        const state = player.getPlayerState();
-        const currentTime = player.getCurrentTime();
-        const duration = player.getDuration();
-
-        if (!duration) return;
-
-        if (state === YT.PlayerState.PLAYING) {
-          const lastTime = Number(iframe.dataset.lastTime || 0);
-          const difference = currentTime - lastTime;
-
-          // Numărăm doar timpul urmărit normal.
-          // Dacă utilizatorul sare înainte, nu adăugăm timpul sărit.
-          if (difference > 0 && difference <= 2) {
-            iframe.dataset.watched =
-              String(Number(iframe.dataset.watched || 0) + difference);
-          }
-
-          iframe.dataset.lastTime = String(currentTime);
-
-          // Cel puțin 95% din videoclip trebuie urmărit
-          const watched = Number(iframe.dataset.watched || 0);
-
-          if (watched >= duration * 0.95) {
-            const button = document.querySelector(
-              `.complete-activity-btn[data-activity-id="${activityId}"]`
-            );
-
-            if (button) {
-              button.disabled = false;
-              button.textContent = 'Am urmărit videoclipul – primește VP';
-              button.classList.add('ready');
-            }
-          }
-        }
-      }, 500);
-    },
-
     onStateChange: event => {
       if (event.data === YT.PlayerState.PLAYING) {
-        iframe.dataset.lastTime =
-          String(youtubePlayers[activityId].getCurrentTime());
+        if (!iframe.dataset.started) {
+          iframe.dataset.started = 'true';
+          iframe.dataset.lastTime = '0';
+        }
+      }
+
+      if (event.data === YT.PlayerState.ENDED) {
+        const button = document.querySelector(
+          `.complete-activity-btn[data-activity-id="${activityId}"]`
+        );
+
+        if (!button) return;
+
+        const duration = youtubePlayers[activityId].getDuration();
+        const currentTime = youtubePlayers[activityId].getCurrentTime();
+
+        // Permitem finalizarea doar dacă videoclipul chiar a ajuns la final
+        if (duration > 0 && currentTime >= duration - 1) {
+          button.disabled = false;
+          button.textContent = 'Am urmărit videoclipul – primește VP';
+          button.classList.add('ready');
+        }
       }
     }
   }
@@ -616,4 +589,4 @@ if (client) {
   });
 
   loadDashboard();
-}
+    }
