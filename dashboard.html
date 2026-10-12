@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0e0b">
+  <title>Panoul meu — Vurqelio</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dash">
+  <div class="grain"></div>
+  <header class="topbar wrap">
+    <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="32" height="32"><span>vurqelio<i>.</i></span></a>
+    <div class="row">
+      <span class="pill" id="navBalance" data-testid="nav-balance">— VP</span>
+      <button class="btn btn-line" id="logoutButton" data-testid="logout-btn">Ieșire</button>
+    </div>
+  </header>
+
+  <main class="wrap" id="app">
+    <div class="loading" id="loading" data-testid="dashboard-loading"><span></span>Se încarcă panoul…</div>
+
+    <section class="hidden" id="dashboard" data-testid="dashboard">
+      <div class="dash-head">
+        <div class="who">
+          <span class="av xl" id="myAvatar" data-testid="my-avatar">V</span>
+          <div>
+            <span class="tag" id="levelTag">NIVEL 1</span>
+            <h1>Salut, <em id="userName">—</em>.</h1>
+            <p class="muted" id="userEmail"></p>
+          </div>
+        </div>
+        <div class="daily" data-testid="daily-card">
+          <div><small>STREAK</small><strong id="streakCount" data-testid="streak-count">0</strong><small>zile</small></div>
+          <button class="btn btn-lime" id="dailyBtn" data-testid="daily-claim-btn">Bonus zilnic</button>
+        </div>
+      </div>
+
+      <div class="banner hidden" id="streakBanner" data-testid="streak-banner"></div>
+
+      <div class="stats">
+        <div class="stat main"><small>SOLD</small><strong id="balance" data-testid="balance">0</strong><span>VP</span></div>
+        <div class="stat"><small>NIVEL</small><strong id="level" data-testid="level">1</strong>
+          <div class="bar"><i id="levelBar"></i></div><small id="levelText" class="muted"></small></div>
+        <div class="stat"><small>FINALIZATE</small><strong id="doneCount">0</strong><small class="muted">activități</small></div>
+        <div class="stat"><small>INSIGNE</small><strong id="badgeCount">0</strong><small class="muted" id="badgeTotal"></small></div>
+      </div>
+
+      <nav class="dtabs" id="dtabs">
+        <button class="active" data-tab="activities" data-testid="tab-activities">Activități</button>
+        <button data-tab="challenges" data-testid="tab-challenges">Provocări</button>
+        <button data-tab="leaderboard" data-testid="tab-leaderboard">Clasament</button>
+        <button data-tab="shop" data-testid="tab-shop">Magazin</button>
+        <button data-tab="badges" data-testid="tab-badges">Insigne</button>
+        <button data-tab="history" data-testid="tab-history">Istoric</button>
+        <button data-tab="profile" data-testid="tab-profile">Profil</button>
+        <button data-tab="admin" class="hidden" id="adminTab" data-testid="tab-admin">Admin</button>
+      </nav>
+
+      <div class="panel" data-panel="activities"><div class="grid" id="activities"></div></div>
+      <div class="panel hidden" data-panel="leaderboard">
+        <div class="seg three"><button class="active" data-period="week" data-testid="lb-week">Săptămâna</button><button data-period="month" data-testid="lb-month">Sezon (lună)</button><button data-period="all" data-testid="lb-all">Din totdeauna</button></div>
+        <p class="muted week-end" id="seasonInfo"></p>
+        <ol class="board" id="board" data-testid="leaderboard-list"></ol>
+        <h3 class="sub">Sala campionilor</h3>
+        <div class="seasons" id="seasons" data-testid="season-winners"></div>
+      </div>
+      <div class="panel hidden" data-panel="shop"><div class="grid" id="shop"></div><h3 class="sub">Cererile mele</h3><div class="list" id="myRedemptions"></div></div>
+      <div class="panel hidden" data-panel="badges"><div class="badges" id="badges"></div></div>
+      <div class="panel hidden" data-panel="history"><div class="list" id="history"></div></div>
+      <div class="panel hidden" data-panel="challenges">
+        <p class="muted week-end" id="weekEnd"></p>
+        <div class="grid" id="challenges" data-testid="challenges-list"></div>
+      </div>
+      <div class="panel hidden" data-panel="profile">
+        <div class="admin-cols">
+          <form class="card form" id="profileForm" data-testid="profile-form">
+            <h3>Numele tău</h3>
+            <label>Nume afișat (2–30 caractere)<input id="nameInput" required minlength="2" maxlength="30" data-testid="profile-name-input"></label>
+            <button class="btn btn-lime full" data-testid="profile-save-btn">Salvează</button>
+          </form>
+          <div class="card form">
+            <h3>Rama avatarului</h3>
+            <p class="muted small">Ramele se deblochează din Magazin.</p>
+            <div class="frames" id="frames" data-testid="frames-list"></div>
+          </div>
+          <div class="card form ref-card" data-testid="referral-card">
+            <h3>Invită prieteni</h3>
+            <p class="muted small">Primiți amândoi <b class="pos">+100 VP</b> după prima activitate finalizată de prietenul tău.</p>
+            <div class="ref-link"><input id="refLink" readonly data-testid="referral-link"><button class="btn btn-lime" id="copyRef" type="button" data-testid="referral-copy-btn">Copiază</button></div>
+            <div class="ref-stats"><div><strong id="refInvited">0</strong><small>înscriși</small></div><div><strong id="refRewarded">0</strong><small>recompensați</small></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel hidden" data-panel="admin">
+        <div class="admin-cols">
+          <form class="card form" id="activityForm" data-testid="admin-activity-form">
+            <h3>Activitate nouă</h3>
+            <label>Titlu<input name="title" required maxlength="80"></label>
+            <label>Descriere<input name="description" maxlength="200"></label>
+            <label>Link YouTube<input name="video_url" type="url" required placeholder="https://youtu.be/…"></label>
+            <div class="row2"><label>Durată (sec)<input name="duration_seconds" type="number" min="10" required></label>
+            <label>Puncte<input name="points" type="number" min="1" required></label></div>
+            <label>Status<select name="status"><option value="active">Activă</option><option value="draft">Ciornă</option></select></label>
+            <button class="btn btn-lime full" data-testid="admin-activity-submit">Adaugă activitatea</button>
+          </form>
+          <form class="card form" id="rewardForm" data-testid="admin-reward-form">
+            <h3>Recompensă nouă</h3>
+            <label>Titlu<input name="title" required maxlength="60"></label>
+            <label>Descriere<input name="description" maxlength="160"></label>
+            <div class="row2"><label>Cost (VP)<input name="cost" type="number" min="1" required></label>
+            <label>Stoc (gol = nelimitat)<input name="stock" type="number" min="0"></label></div>
+            <button class="btn btn-lime full" data-testid="admin-reward-submit">Adaugă recompensa</button>
+          </form>
+        </div>
+        <form class="card form" id="challengeForm" data-testid="admin-challenge-form" style="margin-top:16px">
+          <h3 id="challengeFormTitle">Provocare nouă</h3>
+          <input type="hidden" name="id">
+          <div class="row2"><label>Titlu<input name="title" required maxlength="60"></label>
+          <label>Descriere<input name="description" maxlength="160"></label></div>
+          <div class="row4"><label>Tip<select name="metric"><option value="activities">Activități finalizate</option><option value="daily">Zile cu bonus</option><option value="earned">VP câștigați</option></select></label>
+          <label>Țintă<input name="target" type="number" min="1" required></label>
+          <label>Bonus (VP)<input name="reward" type="number" min="1" required></label>
+          <label>Ordine<input name="sort" type="number" value="0"></label></div>
+          <div class="row"><button class="btn btn-lime" data-testid="admin-challenge-submit">Salvează provocarea</button><button type="button" class="btn btn-line hidden" id="cancelChallenge">Anulează editarea</button></div>
+        </form>
+        <h3 class="sub">Provocări</h3><div class="list" id="adminChallenges"></div>
+        <h3 class="sub">Activități</h3><div class="list" id="adminActivities"></div>
+        <h3 class="sub">Recompense</h3><div class="list" id="adminRewards"></div>
+        <h3 class="sub">Cereri de recompense</h3><div class="list" id="adminRedemptions"></div>
+      </div>
+
+      <p class="note">În versiunea actuală, VP sunt puncte demonstrative și nu au valoare monetară.</p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" data-testid="toast"></div>
+  <script src="app.js"></script>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <script src="dashboard.js"></script>
+</body>
+</html>
