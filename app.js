@@ -354,12 +354,7 @@ function renderDashboard({ user, profile, balance, ledger, activities }) {
         <small>Activitățile vor apărea aici când vor fi active.</small>
       </div>
     `;
-      <div class="empty-state">
-        <span>◌</span>
-        <strong>Nu sunt activități active momentan.</strong>
-        <small>Activitățile vor apărea aici când vor fi active.</small>
-      </div>
-    `;
+      
   dashboard.innerHTML = `
     <div class="real-dashboard-header">
       <div>
