@@ -354,7 +354,50 @@ function renderDashboard({ user, profile, balance, ledger, activities }) {
     block: 'start'
   });
 }
+/* =========================
+   COMPLETE ACTIVITY
+========================= */
 
+document.addEventListener('click', async (e) => {
+  const button = e.target.closest('.complete-activity-btn');
+
+  if (!button) return;
+
+  const activityId = button.dataset.activityId;
+
+  if (!activityId) {
+    toast('Activitatea nu este validă.');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Se acordă punctele…';
+
+  try {
+    const { data, error } = await client.rpc('complete_activity', {
+      p_activity_id: activityId
+    });
+
+    if (error) {
+      console.error('Complete activity error:', error);
+      throw error;
+    }
+
+    toast(`Ai primit ${data} VP!`);
+
+    await loadDashboard();
+
+  } catch (err) {
+    console.error(err);
+
+    button.disabled = false;
+    button.textContent = 'Am urmărit videoclipul';
+
+    toast(
+      err.message || 'Nu s-au putut acorda punctele.'
+    );
+  }
+});
 
 /* =========================
    AUTH
