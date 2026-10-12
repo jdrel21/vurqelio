@@ -229,20 +229,21 @@ function renderDashboard({ user, profile, balance, ledger, activities }) {
   activity.video_url
     ? `
       <div class="activity-video">
-        <iframe
-          src="${activity.video_url.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0]}"
-          title="${escapeHtml(activity.title)}"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>
+<iframe
+  id="video-${activity.id}"
+  src="${activity.video_url.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0]}?enablejsapi=1"
+  title="${escapeHtml(activity.title)}"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen>
+</iframe>
       </div>
-
-      <button
-        class="btn btn-primary complete-activity-btn"
-        data-activity-id="${activity.id}">
-        Am urmărit videoclipul — primește ${activity.points} VP
-      </button>
+<button
+  class="btn btn-primary complete-activity-btn"
+  data-activity-id="${activity.id}"
+  disabled>
+  Urmărește videoclipul până la final
+</button>
     `
     : ''
           }
