@@ -102,23 +102,35 @@ async function initializeYouTubePlayers() {
     if (!activityId) return;
 
     youtubePlayers[activityId] = new YT.Player(iframe, {
-      events: {
-        onStateChange: event => {
-          if (event.data === YT.PlayerState.ENDED) {
-            const button = document.querySelector(
-              `.complete-activity-btn[data-activity-id="${activityId}"]`
-            );
-
-            if (!button) return;
-
-            button.disabled = false;
-            button.textContent = 'Am urmărit videoclipul — primește VP';
-            button.classList.add('ready');
-          }
+  events: {
+    onStateChange: event => {
+      if (event.data === YT.PlayerState.PLAYING) {
+        if (!iframe.dataset.started) {
+          iframe.dataset.started = 'true';
+          iframe.dataset.lastTime = '0';
         }
       }
-    });
-  });
+
+      if (event.data === YT.PlayerState.ENDED) {
+        const button = document.querySelector(
+          `.complete-activity-btn[data-activity-id="${activityId}"]`
+        );
+
+        if (!button) return;
+
+        const duration = youtubePlayers[activityId].getDuration();
+        const currentTime = youtubePlayers[activityId].getCurrentTime();
+
+        // Permitem finalizarea doar dacă videoclipul chiar a ajuns la final
+        if (duration > 0 && currentTime >= duration - 1) {
+          button.disabled = false;
+          button.textContent = 'Am urmărit videoclipul – primește VP';
+          button.classList.add('ready');
+        }
+      }
+    }
+  }
+});
 }
 function toast(text) {
   const el = document.getElementById('toast');
