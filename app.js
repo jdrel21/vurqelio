@@ -28,7 +28,98 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
+/* =========================
+   YOUTUBE PLAYER
+========================= */
 
+let youtubeApiPromise = null;
+const youtubePlayers = {};
+
+function loadYouTubeAPI() {
+  if (youtubeApiPromise) return youtubeApiPromise;
+
+  youtubeApiPromise = new Promise(resolve => {
+    if (window.YT && window.YT.Player) {
+      resolve();
+      return;
+    }
+
+    const previousCallback = window.onYouTubeIframeAPIReady;
+
+    window.onYouTubeIframeAPIReady = () => {
+      if (previousCallback) previousCallback();
+      resolve();
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(script);
+  });
+
+  return youtubeApiPromise;
+}
+
+function getYouTubeVideoId(url) {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname.includes('youtu.be')) {
+      return parsed.pathname.replace('/', '').split('/')[0] || null;
+    }
+
+    if (parsed.hostname.includes('youtube.com')) {
+      if (parsed.pathname === '/watch') {
+        return parsed.searchParams.get('v');
+      }
+
+      if (parsed.pathname.startsWith('/embed/')) {
+        return parsed.pathname.split('/embed/')[1].split('/')[0];
+      }
+
+      if (parsed.pathname.startsWith('/shorts/')) {
+        return parsed.pathname.split('/shorts/')[1].split('/')[0];
+      }
+    }
+  } catch (error) {
+    console.error('YouTube URL error:', error);
+  }
+
+  return null;
+}
+
+async function initializeYouTubePlayers() {
+  const iframes = document.querySelectorAll('.activity-video iframe');
+
+  if (!iframes.length) return;
+
+  await loadYouTubeAPI();
+
+  iframes.forEach(iframe => {
+    const activityId = iframe.dataset.activityId;
+
+    if (!activityId) return;
+
+    youtubePlayers[activityId] = new YT.Player(iframe, {
+      events: {
+        onStateChange: event => {
+          if (event.data === YT.PlayerState.ENDED) {
+            const button = document.querySelector(
+              `.complete-activity-btn[data-activity-id="${activityId}"]`
+            );
+
+            if (!button) return;
+
+            button.disabled = false;
+            button.textContent = 'Am urmărit videoclipul — primește VP';
+            button.classList.add('ready');
+          }
+        }
+      }
+    });
+  });
+}
 function toast(text) {
   const el = document.getElementById('toast');
   if (!el) return;
