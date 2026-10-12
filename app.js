@@ -303,45 +303,57 @@ function renderDashboard({ user, profile, balance, ledger, activities }) {
     `;
 
   const activitiesHtml = activities.length
-  ? activities.map(activity => `
-      <article class="real-activity-card">
-        <div class="real-activity-icon">▶</div>
+  ? activities.map(activity => {
+      const videoId = getYouTubeVideoId(activity.video_url);
 
-        <div class="real-activity-content">
-          <h4>${escapeHtml(activity.title)}</h4>
+      const videoHtml = videoId
+        ? `
+          <div class="activity-video">
+            <iframe
+              id="video-${activity.id}"
+              data-activity-id="${activity.id}"
+              src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}"
+              title="${escapeHtml(activity.title)}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
 
-          <p>${escapeHtml(activity.description)}</p>
+          <button
+            class="btn btn-primary complete-activity-btn"
+            data-activity-id="${activity.id}"
+            disabled>
+            Urmărește videoclipul până la final
+          </button>
+        `
+        : '';
 
-          <small>
-            ${activity.points} VP · ${escapeHtml(activity.provider || 'Vurqelio')}
-          </small>
+      return `
+        <article class="real-activity-card">
+          <div class="real-activity-icon">▶</div>
 
-          ${
-  activity.video_url
-    ? `
-      <div class="activity-video">
-<iframe
-  id="video-${activity.id}"
-  src="${activity.video_url.replace('youtu.be/', 'www.youtube.com/embed/').split('?')[0]}?enablejsapi=1"
-  title="${escapeHtml(activity.title)}"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  allowfullscreen>
-</iframe>
-      </div>
-<button
-  class="btn btn-primary complete-activity-btn"
-  data-activity-id="${activity.id}"
-  disabled>
-  Urmărește videoclipul până la final
-</button>
-    `
-    : ''
-          }
-        </div>
-      </article>
-    `).join('')
+          <div class="real-activity-content">
+            <h4>${escapeHtml(activity.title)}</h4>
+
+            <p>${escapeHtml(activity.description)}</p>
+
+            <small>
+              ${activity.points} VP · ${escapeHtml(activity.provider || 'Vurqelio')}
+            </small>
+
+            ${videoHtml}
+          </div>
+        </article>
+      `;
+    }).join('')
   : `
+      <div class="empty-state">
+        <span>◌</span>
+        <strong>Nu sunt activități active momentan.</strong>
+        <small>Activitățile vor apărea aici când vor fi active.</small>
+      </div>
+    `;
       <div class="empty-state">
         <span>◌</span>
         <strong>Nu sunt activități active momentan.</strong>
