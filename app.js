@@ -1,6 +1,6 @@
 /* Vurqelio prototype. Never put a Supabase service_role key in browser code. */
-const SUPABASE_URL = ""; // Add your Project URL from Supabase
-const SUPABASE_ANON_KEY = ""; // Add your public anon/publishable key from Supabase
+const SUPABASE_URL = "https://dkljnpzclzeofwybqtnv.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_NEbiK4viL8ki_K-b-uv3vw_x9TPSV68";
 const client = (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
