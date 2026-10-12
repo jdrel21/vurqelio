@@ -434,6 +434,7 @@ function renderDashboard({ user, profile, balance, ledger, activities }) {
   `;
 
   dashboard.classList.add('visible');
+  initializeYouTubePlayers();
 
   document.getElementById('logoutButton').addEventListener('click', async () => {
     const { error } = await client.auth.signOut();
