@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0e0b">
+  <meta name="description" content="Vurqelio — urmărește conținut, strânge puncte, urcă în clasament.">
+  <title>Vurqelio — Watch. Earn. Repeat.</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar wrap">
+    <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="32" height="32"><span>vurqelio<i>.</i></span></a>
+    <nav class="nav" id="nav">
+      <a href="#cum">Cum funcționează</a>
+      <a href="#functii">Funcții</a>
+      <a href="#recompense">Recompense</a>
+      <span id="guestNav">
+        <button class="btn btn-line" id="openLogin" data-testid="nav-login-btn">Conectare</button>
+        <button class="btn btn-lime" id="openSignup" data-testid="nav-signup-btn">Începe gratuit</button>
+      </span>
+      <a class="btn btn-lime hidden" id="userNav" href="dashboard.html" data-testid="nav-dashboard-link">Panoul meu →</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Meniu" data-testid="menu-toggle">☰</button>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy reveal">
+        <span class="tag"><b class="blink"></b> SEZONUL 01 · PROTOTIP</span>
+        <h1>Privește.<br>Strânge.<br><em>Urcă.</em></h1>
+        <p class="lead">Urmărește activități scurte, ține-ți streak-ul zilnic, deblochează insigne și schimbă punctele pe recompense din magazin.</p>
+        <div class="row">
+          <button class="btn btn-lime btn-xl" id="heroSignup" data-testid="hero-signup-btn">Creează cont gratuit →</button>
+          <a class="btn btn-ghost btn-xl" href="#cum">Vezi cum ↓</a>
+        </div>
+      </div>
+      <div class="hero-ticket reveal d2" aria-hidden="true">
+        <div class="ticket">
+          <div class="t-head"><span>VURQELIO / PASS</span><span>№ 0001</span></div>
+          <div class="t-balance"><small>SOLD</small><strong>1.250<span>VP</span></strong></div>
+          <div class="t-level"><span>NIVEL 04</span><span>860 / 1.600</span></div>
+          <div class="bar"><i style="width:54%"></i></div>
+          <div class="t-streak">
+            <span class="on">L</span><span class="on">M</span><span class="on">M</span><span class="on">J</span><span class="on">V</span><span>S</span><span>D</span>
+          </div>
+          <div class="t-foot"><span>🔥 5 ZILE</span><span>#12 ÎN CLASAMENT</span></div>
+        </div>
+        <div class="stamp">DEMO</div>
+      </div>
+    </section>
+
+    <section class="marquee" aria-hidden="true"><div>WATCH ✦ EARN ✦ REPEAT ✦ STREAK ✦ INSIGNE ✦ CLASAMENT ✦ MAGAZIN ✦ WATCH ✦ EARN ✦ REPEAT ✦ STREAK ✦ INSIGNE ✦ CLASAMENT ✦ MAGAZIN ✦</div></section>
+
+    <section class="section wrap" id="cum">
+      <div class="sec-head"><span class="tag">01 — FLUX</span><h2>Trei pași.<br>Zero complicații.</h2></div>
+      <ol class="steps">
+        <li class="reveal"><b>01</b><h3>Creează-ți contul</h3><p>Email și parolă. Primești imediat un panou personal.</p></li>
+        <li class="reveal d1"><b>02</b><h3>Urmărește până la final</h3><p>Timpul de vizionare e verificat pe server — punctele nu pot fi păcălite.</p></li>
+        <li class="reveal d2"><b>03</b><h3>Strânge și schimbă</h3><p>Urcă nivele, câștigă insigne și folosește VP în magazin.</p></li>
+      </ol>
+    </section>
+
+    <section class="section wrap" id="functii">
+      <div class="sec-head"><span class="tag">02 — FUNCȚII</span><h2>Construit să revii<br><em>în fiecare zi.</em></h2></div>
+      <div class="bento">
+        <article class="cell big reveal"><span class="ic">🔥</span><h3>Streak zilnic</h3><p>Bonus în fiecare zi: de la 10 la 40 VP pe măsură ce seria crește. Ratezi o zi, o iei de la capăt.</p></article>
+        <article class="cell reveal d1"><span class="ic">◆</span><h3>Nivele</h3><p>Fiecare VP câștigat te duce mai sus.</p></article>
+        <article class="cell reveal d2"><span class="ic">✶</span><h3>Insigne</h3><p>9 insigne de deblocat.</p></article>
+        <article class="cell reveal d1"><span class="ic">#</span><h3>Clasament</h3><p>Săptămânal și all-time.</p></article>
+        <article class="cell wide reveal d2"><span class="ic">★</span><h3>Magazin de recompense</h3><p>Schimbă punctele pe avataruri, titluri și bilete la tombola demo.</p></article>
+      </div>
+    </section>
+
+    <section class="section wrap rewards" id="recompense">
+      <div><span class="tag">03 — TRANSPARENȚĂ</span><h2>Puncte clare.<br>Reguli clare.</h2>
+        <p class="lead">În această versiune, Vurqelio Points (VP) sunt demonstrative și nu au valoare monetară. Orice recompensă reală va avea reguli afișate clar înainte de lansare.</p>
+        <button class="btn btn-lime" id="rewardsSignup" data-testid="rewards-signup-btn">Testează panoul →</button>
+      </div>
+      <ul class="rules">
+        <li><b>✓</b> Validare pe server a vizionărilor</li>
+        <li><b>✓</b> O singură recompensă per activitate</li>
+        <li><b>✓</b> Istoric complet al punctelor</li>
+        <li><b>✓</b> Fără date de plată</li>
+      </ul>
+    </section>
+
+    <section class="cta wrap"><h2>Sezonul 01<br>începe acum.</h2><button class="btn btn-ink btn-xl" id="bottomSignup" data-testid="cta-signup-btn">Începe gratuit ↗</button></section>
+  </main>
+
+  <footer class="footer wrap"><span>© <span id="year"></span> Vurqelio · Prototip în dezvoltare</span><div><a href="privacy.html">Confidențialitate</a><a href="terms.html">Termeni</a><a href="advertise.html" data-testid="footer-advertise-link">Promovează-te</a><a href="#" onclick="openCookieSettings();return false" data-testid="footer-cookies-link">Setări cookies</a><a href="mailto:contact@vurqelio.com">Contact</a></div></footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true" data-testid="auth-modal">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="modal-close" id="closeModal" aria-label="Închide" data-testid="auth-close-btn">×</button>
+      <h2 id="authTitle">Bine ai venit.</h2><p id="authSubtitle" class="muted">Creează-ți contul.</p>
+      <div class="tabs"><button class="active" data-mode="signup" data-testid="auth-tab-signup">Înregistrare</button><button data-mode="login" data-testid="auth-tab-login">Conectare</button></div>
+      <form id="authForm">
+        <label id="nameLabel">Nume afișat<input id="displayName" type="text" maxlength="30" autocomplete="nickname" placeholder="Cum să-ți spunem?" data-testid="auth-name-input"></label>
+        <label>Email<input id="email" type="email" autocomplete="email" placeholder="nume@email.com" required data-testid="auth-email-input"></label>
+        <label>Parolă<input id="password" type="password" minlength="8" autocomplete="new-password" placeholder="Minimum 8 caractere" required data-testid="auth-password-input"></label>
+        <button type="button" class="link hidden" id="forgotBtn" data-testid="auth-forgot-btn">Ai uitat parola?</button>
+        <button class="btn btn-lime full" id="authSubmit" type="submit" data-testid="auth-submit-btn">Creează cont →</button>
+        <p class="form-msg" id="formMessage" role="status" data-testid="auth-message"></p>
+        <small class="muted">Punctele demonstrative nu pot fi retrase.</small>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" data-testid="toast"></div>
+  <script src="app.js"></script>
+  <script src="cookies.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

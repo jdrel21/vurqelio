@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0e0b">
+  <title>Retragere puncte — Vurqelio</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar wrap"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" width="32" height="32"><span>vurqelio<i>.</i></span></a>
+    <div class="row"><span class="pill" id="navBalance" data-testid="withdraw-balance">— VP</span><a class="btn btn-line" href="dashboard.html">← Panou</a></div></header>
+  <main class="wrap">
+    <section class="section" style="padding-top:30px">
+      <div class="sec-head"><span class="tag">RETRAGERE</span><h2>Transformă punctele<br><em>în bani.</em></h2></div>
+      <div class="banner warn hidden" id="offBanner" data-testid="withdraw-disabled-banner"><span class="b-fire">⏳</span><div><strong>Retragerile nu sunt încă active.</strong><small>Le vom porni după înregistrarea firmei și aprobarea partenerilor. Punctele tale rămân în cont.</small></div></div>
+      <div class="card form phone-card hidden" id="phoneCard" data-testid="phone-verify-card">
+        <h3>📱 Verifică-ți telefonul</h3>
+        <p class="muted small">Pentru a preveni conturile multiple, fiecare cont care retrage bani trebuie să aibă un număr de telefon unic, verificat prin SMS.</p>
+        <div class="phone-row">
+          <label>Număr de telefon<input id="phone" type="tel" placeholder="+40712345678" autocomplete="tel" data-testid="phone-input"></label>
+          <button class="btn btn-lime" id="sendCode" type="button" data-testid="phone-send-btn">Trimite codul</button>
+        </div>
+        <div class="phone-row hidden" id="codeRow">
+          <label>Cod primit prin SMS<input id="code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" data-testid="phone-code-input"></label>
+          <button class="btn btn-lime" id="verifyCode" type="button" data-testid="phone-verify-btn">Verifică</button>
+        </div>
+        <p class="form-msg" id="phoneMsg" role="status" data-testid="phone-message"></p>
+      </div>
+      <p class="pill verified hidden" id="phoneOk" data-testid="phone-verified-badge">✓ Telefon verificat</p>
+      <div class="admin-cols">
+        <div class="card form">
+          <h3>Reguli clare</h3>
+          <ul class="rules-list" id="rules" data-testid="withdraw-rules"></ul>
+        </div>
+        <form class="card form" id="wForm" data-testid="withdraw-form">
+          <h3>Cerere nouă</h3>
+          <label>Puncte de retras<input id="wPoints" type="number" required data-testid="withdraw-points-input"></label>
+          <p class="mono" id="wEstimate" data-testid="withdraw-estimate">≈ 0,00 €</p>
+          <label>Metodă<select id="wMethod" data-testid="withdraw-method"><option value="paypal">PayPal (email)</option><option value="revolut">Revolut (@utilizator sau telefon)</option><option value="iban">Transfer bancar (IBAN + nume)</option></select></label>
+          <label>Date de plată<input id="wDest" required minlength="5" maxlength="120" placeholder="ex. nume@email.com" data-testid="withdraw-destination"></label>
+          <button class="btn btn-lime full" id="wBtn" data-testid="withdraw-submit-btn">Trimite cererea</button>
+          <p class="form-msg" id="wMsg" role="status" data-testid="withdraw-message"></p>
+        </form>
+      </div>
+      <h3 class="sub">Cererile mele</h3>
+      <div class="list" id="wList" data-testid="withdraw-history"></div>
+    </section>
+  </main>
+  <footer class="footer wrap"><span>© Vurqelio</span><div><a href="terms.html">Termeni</a><a href="#" onclick="openCookieSettings();return false">Setări cookies</a></div></footer>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+  <script src="cookies.js"></script>
+  <script>
+    let cfg = {}, balance = 0;
+    const eur = n => n.toLocaleString('ro-RO', { style: 'currency', currency: 'EUR' });
+    const vp = n => Number(n).toLocaleString('ro-RO');
+    const label = { pending: 'În procesare', paid: 'Plătită', rejected: 'Respinsă (rambursată)' };
+
+    async function load(uid) {
+      const [s, l, w] = await Promise.all([
+        client.from('app_settings').select('value').eq('key', 'withdrawals').maybeSingle(),
+        client.from('point_ledger').select('amount').eq('user_id', uid),
+        client.from('withdrawal_requests').select('*').eq('user_id', uid).order('created_at', { ascending: false })
+      ]);
+      cfg = s.data?.value || { enabled: false, min_points: 5000, vp_per_eur: 1000, min_account_days: 7 };
+      balance = (l.data || []).reduce((t, x) => t + x.amount, 0);
+      $('navBalance').textContent = `${vp(balance)} VP`;
+      $('offBanner').classList.toggle('hidden', cfg.enabled);
+      $('rules').innerHTML = [
+        `Curs: <b>${vp(cfg.vp_per_eur)} VP = 1 €</b>`,
+        `Minim pentru retragere: <b>${vp(cfg.min_points)} VP</b> (${eur(cfg.min_points / cfg.vp_per_eur)})`,
+        `Contul trebuie să aibă cel puțin <b>${cfg.min_account_days} zile</b>`,
+        'Număr de telefon verificat prin SMS (unic per cont)',
+        'O singură cerere în procesare odată',
+        'Punctele se rezervă imediat; dacă cererea e respinsă, revin în cont',
+        'Plățile se procesează manual în maximum 7 zile lucrătoare',
+        'Conturile multiple, VPN-urile sau automatizările duc la respingere și blocarea contului'
+      ].map(r => `<li><b>✓</b> <span>${r}</span></li>`).join('');
+      $('wPoints').min = cfg.min_points;
+      $('wPoints').max = Math.max(balance, 0);
+      const { data: verified } = await client.rpc('phone_verified');
+      $('phoneCard').classList.toggle('hidden', !!verified);
+      $('phoneOk').classList.toggle('hidden', !verified);
+      [...$('wForm').elements].forEach(el => el.disabled = !cfg.enabled || !verified);
+      $('wList').innerHTML = (w.data || []).length ? w.data.map(r => `<div class="item"><div><strong>${vp(r.points)} VP → ${eur(Number(r.amount_eur))}</strong><small>${r.method.toUpperCase()} · ${new Date(r.created_at).toLocaleString('ro-RO')}</small></div><span class="status ${r.status === 'paid' ? 'fulfilled' : r.status}">${label[r.status]}</span></div>`).join('')
+        : '<div class="empty"><span>◌</span><strong>Nicio cerere încă.</strong></div>';
+    }
+
+    $('wPoints').addEventListener('input', () => $('wEstimate').textContent = `≈ ${eur((Number($('wPoints').value) || 0) / (cfg.vp_per_eur || 1000))}`);
+    $('wMethod').addEventListener('change', () => $('wDest').placeholder = { paypal: 'ex. nume@email.com', revolut: 'ex. @utilizator', iban: 'ex. RO49AAAA1B31007593840000, Ion Popescu' }[$('wMethod').value]);
+
+    (async () => {
+      const { data } = await client.auth.getSession();
+      if (!data.session) return location.replace('index.html?login');
+      const uid = data.session.user.id;
+      await load(uid);
+      const pmsg = (t, ok) => { $('phoneMsg').className = ok ? 'form-msg ok' : 'form-msg err'; $('phoneMsg').textContent = t; };
+      $('sendCode').addEventListener('click', async () => {
+        const phone = $('phone').value.replace(/[\s-]/g, '');
+        if (!/^\+\d{8,15}$/.test(phone)) return pmsg('Scrie numărul în format internațional, ex. +40712345678.');
+        $('sendCode').disabled = true;
+        const { error } = await client.auth.updateUser({ phone });
+        $('sendCode').disabled = false;
+        if (error) return pmsg(error.message.includes('already') ? 'Acest număr este deja folosit de alt cont.' : error.message);
+        $('codeRow').classList.remove('hidden');
+        $('sendCode').textContent = 'Retrimite codul';
+        pmsg('Ți-am trimis un cod prin SMS.', true);
+      });
+      $('verifyCode').addEventListener('click', async () => {
+        const phone = $('phone').value.replace(/[\s-]/g, '');
+        $('verifyCode').disabled = true;
+        const { error } = await client.auth.verifyOtp({ phone, token: $('code').value.trim(), type: 'phone_change' });
+        $('verifyCode').disabled = false;
+        if (error) return pmsg('Cod invalid sau expirat.');
+        toast('Telefon verificat ✓');
+        await load(uid);
+      });
+      $('wForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!confirm('Confirmi cererea de retragere?')) return;
+        $('wBtn').disabled = true;
+        const { error } = await client.rpc('request_withdrawal', { p_points: Number($('wPoints').value), p_method: $('wMethod').value, p_destination: $('wDest').value });
+        $('wMsg').className = error ? 'form-msg err' : 'form-msg ok';
+        $('wMsg').textContent = error ? error.message : 'Cerere trimisă! O procesăm în maximum 7 zile lucrătoare.';
+        if (!error) e.target.reset();
+        await load(uid);
+      });
+    })();
+  </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

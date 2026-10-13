@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d0e0b">
+  <title>Reels — Vurqelio</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="reels-page">
+  <header class="reels-top">
+    <a href="dashboard.html" class="btn btn-line sm" data-testid="reels-back-btn">← Panou</a>
+    <span class="pill" id="navBalance" data-testid="reels-balance">— VP</span>
+  </header>
+  <main class="feed" id="feed" data-testid="reels-feed">
+    <div class="loading"><span></span>Se încarcă reels…</div>
+  </main>
+  <div class="sheet-backdrop" id="sheet" aria-hidden="true" data-testid="comments-sheet">
+    <section class="sheet" role="dialog" aria-label="Comentarii">
+      <div class="sheet-head"><strong id="sheetTitle">Comentarii</strong><button class="modal-close" id="sheetClose" aria-label="Închide" data-testid="comments-close-btn">×</button></div>
+      <div class="sheet-list" id="commentList" data-testid="comments-list"></div>
+      <form class="sheet-form" id="commentForm">
+        <input id="commentInput" maxlength="200" placeholder="Scrie un comentariu…" autocomplete="off" required data-testid="comment-input">
+        <button class="btn btn-lime" data-testid="comment-send-btn">Trimite</button>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" data-testid="toast"></div>
+  <script src="app.js"></script>
+  <script src="ads.js"></script>
+  <script src="reels.js"></script>
+  <script src="cookies.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920" integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/r8md2+xvUPtTdvTNRfjA==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
